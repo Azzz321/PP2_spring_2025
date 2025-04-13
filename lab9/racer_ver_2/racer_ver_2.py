@@ -2,6 +2,7 @@
 import pygame, sys
 from pygame.locals import *
 import random, time
+from pygame import mixer
 
 # Initialzing
 pygame.init()
@@ -23,6 +24,11 @@ SCREEN_HEIGHT = 600
 SPEED = 5
 SCORE = 0
 sc = 0
+
+#Setting up the background music
+music=mixer.music.load("lab8_racer_background.wav")
+pygame.mixer.music.play(-1)   
+
 
 # Setting up Fonts
 font = pygame.font.SysFont("Verdana", 60)
@@ -162,7 +168,7 @@ while True:
         
     if pygame.sprite.spritecollideany(P1, coins1):
         Coin.disappear(C2)
-        SCORE += 2
+        SCORE += 5
     if SCORE // 2>>sc:
         SPEED += 1
         sc += 1

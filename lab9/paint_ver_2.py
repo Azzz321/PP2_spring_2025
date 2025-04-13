@@ -10,26 +10,42 @@ yellow = (255, 255, 0)
 orange = (255, 165, 0)
 purple = (128, 0, 128)
 
+#drawing tips
+def draw_tips(screen, font):
+    tips = [
+        "Controls:",
+        "R - Red", "G - Green", "B - Blue", "Y - Yellow", "O - Orange", "P - Purple", "W - White",
+        "X - Rectangle", "C - Circle", "S - Square", "T - Right Triangle", "A - Equilateral Triangle", "D - Rhombus",
+        "Backspace - Eraser"
+    ]
+    y_offset = 5
+    for tip in tips:
+        text_surface = font.render(tip, True, white)
+        screen.blit(text_surface, (5, y_offset))
+        y_offset += 20
+
 def main():
+    #initializing and screen
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Paint")
     clock = pygame.time.Clock()
-
+    font = pygame.font.SysFont("Arial", 16)
+    
     radius = 2
     mode = white
     last_pos = None
 
+    #main loop
     while True:
-        # handle events
+        draw_tips(screen, font)  
+        #determining if any letter key is pressed 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return
-
-                # determine if a letter key was pressed
                 if event.key == pygame.K_r:
                     mode = red
                 elif event.key == pygame.K_g:
@@ -61,80 +77,54 @@ def main():
                     mode = eraser
                 else:
                     radius = 2
-
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # start a new line
                 last_pos = pygame.mouse.get_pos()
-
             if event.type == pygame.MOUSEMOTION and event.buttons[0]:
-                # draw a line from the last point to the current point
+                #draw a line from the last point to the current point 
                 if last_pos is not None:
                     start_pos = last_pos
                     end_pos = pygame.mouse.get_pos()
                     drawLineBetween(screen, start_pos, end_pos, radius, mode)
                     last_pos = end_pos
-
+        
         pygame.display.flip()
         clock.tick(60)
-
-
+#drawing a line
 def drawLineBetween(screen, start, end, width, color_mode):
-    c1 = max(0, min(255, 2 * start[0] - 256))
-    c2 = max(0, min(255, 2 * start[1]))
-
-    color = color_mode
     dx = start[0] - end[0]
     dy = start[1] - end[1]
     iterations = max(abs(dx), abs(dy))
-
     for i in range(iterations):
         progress = 1.0 * i / iterations
-        aprogress = 1 - progress
-        x = int(aprogress * start[0] + progress * end[0])
-        y = int(aprogress * start[1] + progress * end[1])
-        pygame.draw.circle(screen, color, (x, y), width)
-
-# Фигуры
+        x = int((1 - progress) * start[0] + progress * end[0])
+        y = int((1 - progress) * start[1] + progress * end[1])
+        pygame.draw.circle(screen, color_mode, (x, y), width)
+#drawing the figures
 def drawRectangle(screen, mouse_pos, w, h, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
-    rect = pygame.Rect(x, y, w, h)
-    pygame.draw.rect(screen, color, rect, 4)  # 4th parameter is outline of the rectangle
-
+    pygame.draw.rect(screen, color, (*mouse_pos, w, h), 4)
 
 def drawCircle(screen, mouse_pos, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
-    pygame.draw.circle(screen, color, (x, y), 100, 5)  # 4th parameter is outline of the circle
-
+    pygame.draw.circle(screen, color, mouse_pos, 100, 5)
 
 def drawSquare(screen, mouse_pos, side_length, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
-    rect = pygame.Rect(x, y, side_length, side_length)
-    pygame.draw.rect(screen, color, rect, 4)
-
+    pygame.draw.rect(screen, color, (*mouse_pos, side_length, side_length), 4)
 
 def drawRightTriangle(screen, mouse_pos, width, height, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
-    points = [(x, y), (x + width, y), (x, y + height)]
+    points = [mouse_pos, (mouse_pos[0] + width, mouse_pos[1]), (mouse_pos[0], mouse_pos[1] + height)]
     pygame.draw.polygon(screen, color, points, 4)
-
 
 def drawEquilateralTriangle(screen, mouse_pos, side_length, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
     height = side_length * math.sqrt(3) / 2
-    points = [(x, y), (x + side_length, y), (x + side_length / 2, y + height)]
+    points = [mouse_pos, (mouse_pos[0] + side_length, mouse_pos[1]), (mouse_pos[0] + side_length / 2, mouse_pos[1] + height)]
     pygame.draw.polygon(screen, color, points, 4)
-
 
 def drawRhombus(screen, mouse_pos, width, height, color):
-    x = mouse_pos[0]
-    y = mouse_pos[1]
-    points = [(x, y + height / 2), (x + width / 2, y), (x + width, y + height / 2), (x + width / 2, y + height)]
+    points = [
+        (mouse_pos[0], mouse_pos[1] + height / 2),
+        (mouse_pos[0] + width / 2, mouse_pos[1]),
+        (mouse_pos[0] + width, mouse_pos[1] + height / 2),
+        (mouse_pos[0] + width / 2, mouse_pos[1] + height)
+    ]
     pygame.draw.polygon(screen, color, points, 4)
-
 
 main()

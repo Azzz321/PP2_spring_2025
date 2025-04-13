@@ -1,5 +1,5 @@
 import pygame
-from random import randrange, choice
+from random import randrange, choice, randint
 import time
 
 Res = 600
@@ -37,7 +37,7 @@ obstacles = {
 # Bonus points with different colors and disappearing times
 bonus_points = {
     (400, 200): (pygame.Color('blue'), 5),   # Blue bonus point lasts for 5 seconds
-    (100, 400): (pygame.Color('yellow'), 3), # Yellow bonus point lasts for 3 seconds
+    (100, 400): (pygame.Color('yellow'), 10), # Yellow bonus point lasts for 10 seconds
     (500, 500): (pygame.Color('purple'), 7)  # Purple bonus point lasts for 7 seconds
 }
 
@@ -78,7 +78,7 @@ while True:
     # Check for collision with bonus points and handle their disappearance
     for point, (color, duration) in bonus_points.items():
         if (x, y) == point:
-            score += 5  # Increment score for collecting bonus points
+            score += randint(5, 10)  # Increment score for collecting bonus points
             del bonus_points[point]
             break  # Only allow collecting one bonus point at a time
     

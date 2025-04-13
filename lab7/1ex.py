@@ -26,10 +26,10 @@ while True:
         if event.type == pygame.QUIT:
             exit()
     t = datetime.datetime.now()
-    angle1 = -t.second * 6
-    angle2 = -t.minute * 6
-    
-    leftHand1 = pygame.transform.rotate(leftHand,x)
+    angle1 = -t.second * 6  
+    angle2 = -(t.minute * 6 + t.second * 0.1)
+        
+    leftHand1 = pygame.transform.rotate(leftHand,angle1)
     rightHand1 = pygame.transform.rotate(rightHand,angle2)
     
     rightHand1=pygame.transform.scale(rightHand1,(rightHand1.get_width()//2 ,rightHand1.get_height()//2))
